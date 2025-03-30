@@ -148,12 +148,65 @@
 
         .part-label {
             position: absolute;
-            background: rgba(255,255,255,0.9);
-            padding: 0.5rem;
-            border-radius: 5px;
-            font-size: 0.8rem;
+            background: rgba(255,255,255,0.95);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transform: translateZ(50px);
+            opacity: 0;
+            transition: all 0.5s ease;
             pointer-events: none;
-            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .part-label.visible {
+            opacity: 1;
+        }
+
+        .part-label::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.95);
+            transform: rotate(45deg);
+            z-index: -1;
+        }
+
+        .part-label.top::before {
+            bottom: -5px;
+            left: 50%;
+            margin-left: -5px;
+        }
+
+        .part-label.bottom::before {
+            top: -5px;
+            left: 50%;
+            margin-left: -5px;
+        }
+
+        .part-label.left::before {
+            right: -5px;
+            top: 50%;
+            margin-top: -5px;
+        }
+
+        .part-label.right::before {
+            left: -5px;
+            top: 50%;
+            margin-top: -5px;
+        }
+
+        .part-label .title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .part-label .description {
+            font-size: 0.8rem;
+            color: #666;
         }
 
         /* Beam Path Visualization */
@@ -226,10 +279,42 @@
                 <div class="acceleration-tube"></div>
                 <div class="focusing-magnets"></div>
                 <div class="mlc-system"></div>
+                <div class="part-label top" style="top: -80px; left: 200px;">
+                    <div class="title">Gantry-Arm</div>
+                    <div class="description">Hauptträger des Beschleunigers</div>
+                </div>
             </div>
-            <div class="part treatment-head"></div>
-            <div class="part collimator"></div>
-            <div class="part patient-table"></div>
+            <div class="part treatment-head">
+                <div class="part-label right" style="right: -220px; top: 50%;">
+                    <div class="title">Behandlungskopf</div>
+                    <div class="description">Strahlführung und Formung</div>
+                </div>
+            </div>
+            <div class="part collimator">
+                <div class="part-label left" style="left: -200px; top: 50%;">
+                    <div class="title">Multi-Leaf Kollimator</div>
+                    <div class="description">Präzise Strahlformung</div>
+                </div>
+            </div>
+            <div class="part patient-table">
+                <div class="part-label bottom" style="bottom: -60px; left: 50%;">
+                    <div class="title">Patiententisch</div>
+                    <div class="description">6-Achsen Positionierung</div>
+                </div>
+            </div>
+            <!-- Zusätzliche Komponenten-Labels -->
+            <div class="part-label right" style="top: 50px; right: -180px;">
+                <div class="title">Elektronenquelle</div>
+                <div class="description">100-150 kV Kathode</div>
+            </div>
+            <div class="part-label left" style="top: 150px; left: -180px;">
+                <div class="title">Beschleunigungsröhre</div>
+                <div class="description">2-3m Länge, Vakuum 10^-6 Torr</div>
+            </div>
+            <div class="part-label right" style="top: 250px; right: -200px;">
+                <div class="title">Fokussierungsmagnete</div>
+                <div class="description">1-2 Tesla Magnetfeld</div>
+            </div>
         </div>
     </div>
 
@@ -292,13 +377,33 @@
 
         function startAssembly() {
             const steps = [
-                { element: parts[0], description: "Montage der Gantry-Struktur" },
-                { element: parts[1], description: "Installation des Behandlungskopfes" },
-                { element: parts[2], description: "Einbau des Kollimator-Systems" },
-                { element: parts[3], description: "Positionierung des Patiententisches" }
+                { 
+                    element: parts[0], 
+                    description: "Montage der Gantry-Struktur",
+                    labels: document.querySelectorAll('.gantry-arm .part-label')
+                },
+                { 
+                    element: parts[1], 
+                    description: "Installation des Behandlungskopfes",
+                    labels: document.querySelectorAll('.treatment-head .part-label')
+                },
+                { 
+                    element: parts[2], 
+                    description: "Einbau des Kollimator-Systems",
+                    labels: document.querySelectorAll('.collimator .part-label')
+                },
+                { 
+                    element: parts[3], 
+                    description: "Positionierung des Patiententisches",
+                    labels: document.querySelectorAll('.patient-table .part-label')
+                }
             ];
 
             assemblyStep = 0;
+            // Reset all parts and labels
+            parts.forEach(part => part.classList.remove('visible'));
+            document.querySelectorAll('.part-label').forEach(label => label.classList.remove('visible'));
+
             const interval = setInterval(() => {
                 if (assemblyStep >= steps.length) {
                     clearInterval(interval);
@@ -307,10 +412,30 @@
 
                 const step = steps[assemblyStep];
                 step.element.classList.add('visible');
+                step.labels.forEach(label => label.classList.add('visible'));
                 document.getElementById('step-description').textContent = step.description;
                 assemblyStep++;
             }, 2000);
         }
+
+        // Verbesserte Touch-Steuerung für Labels
+        document.querySelectorAll('.part-label').forEach(label => {
+            label.style.transform = `translateZ(50px)`;
+        });
+
+        function updateLabels() {
+            document.querySelectorAll('.part-label').forEach(label => {
+                const parentRotation = label.closest('.part')?.style.transform || '';
+                label.style.transform = `translateZ(50px) ${parentRotation}`;
+            });
+        }
+
+        // Erweitere die updateRotation Funktion
+        const originalUpdateRotation = updateRotation;
+        updateRotation = function() {
+            originalUpdateRotation();
+            updateLabels();
+        };
 
         // Touch controls
         let touchStartX = 0;
