@@ -3,16 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meine Website</title>
+    <title>Gero Wieger - Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: var(--light-bg);
+        }
+
+        header {
+            background: var(--primary-color);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--secondary-color);
+        }
+
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .featured-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .featured-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .featured-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .featured-item h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .featured-item p {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">Über uns</a></li>
-                <li><a href="#services">Leistungen</a></li>
+                <li><a href="cv.html">Lebenslauf</a></li>
+                <li><a href="linac-animation.html">LINAC Animation</a></li>
                 <li><a href="#contact">Kontakt</a></li>
             </ul>
         </nav>
@@ -21,14 +145,25 @@
     <main>
         <section id="home">
             <h1>Willkommen auf meiner Website</h1>
-            <p>Hello World!</p>
+            <div class="featured-links">
+                <div class="featured-item">
+                    <i class="fas fa-file-alt icon"></i>
+                    <h2>Lebenslauf</h2>
+                    <p>Erfahren Sie mehr über meinen beruflichen Werdegang und meine Qualifikationen.</p>
+                    <a href="cv.html" class="btn">Zum Lebenslauf</a>
+                </div>
+                <div class="featured-item">
+                    <i class="fas fa-radiation icon"></i>
+                    <h2>LINAC Animation</h2>
+                    <p>Entdecken Sie die interaktive Animation eines modernen Linearbeschleunigers.</p>
+                    <a href="linac-animation.html" class="btn">Zur Animation</a>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 Meine Website. Alle Rechte vorbehalten.</p>
+        <p>&copy; 2024 Gero Wieger. Alle Rechte vorbehalten.</p>
     </footer>
-
-    <script src="js/main.js"></script>
 </body>
 </html>
