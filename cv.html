@@ -193,9 +193,86 @@
                 break-inside: avoid;
             }
         }
+
+        /* Linac Animation Styles */
+        .linac-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+            filter: blur(1px);
+        }
+
+        .linac {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 600px;
+        }
+
+        .linac-part {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-out;
+        }
+
+        .linac-part.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .linac {
+                width: 400px;
+                height: 300px;
+            }
+        }
+
+        @media print {
+            .linac-container {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="linac-container">
+        <svg class="linac" viewBox="0 0 800 600">
+            <!-- Gantry Base -->
+            <path class="linac-part" d="M300,500 L500,500 L500,480 L300,480 Z" fill="#2c3e50"/>
+            
+            <!-- Rotating Arm -->
+            <path class="linac-part" d="M350,480 L450,480 L500,300 L250,300 Z" fill="#3498db"/>
+            
+            <!-- Treatment Head -->
+            <path class="linac-part" d="M250,300 L500,300 L475,250 L275,250 Z" fill="#2c3e50"/>
+            
+            <!-- Collimator -->
+            <path class="linac-part" d="M300,250 L450,250 L425,200 L325,200 Z" fill="#3498db"/>
+            
+            <!-- Patient Table Base -->
+            <path class="linac-part" d="M200,450 L250,450 L250,430 L200,430 Z" fill="#2c3e50"/>
+            
+            <!-- Patient Table -->
+            <path class="linac-part" d="M150,430 L600,430 L600,410 L150,410 Z" fill="#3498db"/>
+            
+            <!-- Control Panel -->
+            <path class="linac-part" d="M550,500 L600,500 L600,350 L550,350 Z" fill="#2c3e50"/>
+            
+            <!-- Beam Direction Indicator -->
+            <path class="linac-part" d="M370,200 L380,200 L375,150 Z" fill="#e74c3c"/>
+            
+            <!-- Radiation Shield -->
+            <path class="linac-part" d="M275,250 L475,250 Q475,230 375,230 Q275,230 275,250" fill="#7f8c8d"/>
+        </svg>
+    </div>
+
     <div class="container">
         <header>
             <div class="profile-info">
@@ -463,6 +540,43 @@
                 item.style.transform = 'translateX(-20px)';
                 item.style.transition = 'all 0.5s ease-out';
                 observer.observe(item);
+            });
+
+            // Linac Animation
+            const linacParts = document.querySelectorAll('.linac-part');
+            let lastScrollPosition = 0;
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            
+            function animateLinac() {
+                const scrollPosition = window.pageYOffset;
+                const scrollPercentage = (scrollPosition / totalScroll) * 100;
+                
+                linacParts.forEach((part, index) => {
+                    const partThreshold = (index / linacParts.length) * 100;
+                    
+                    if (scrollPercentage > partThreshold) {
+                        part.classList.add('visible');
+                    } else {
+                        part.classList.remove('visible');
+                    }
+                });
+
+                // Rotate the entire linac based on scroll
+                const rotation = (scrollPosition / totalScroll) * 360;
+                document.querySelector('.linac').style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+                
+                lastScrollPosition = scrollPosition;
+                requestAnimationFrame(animateLinac);
+            }
+
+            // Start the animation
+            animateLinac();
+
+            // Add parallax effect
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                document.querySelector('.linac-container').style.transform = 
+                    `translateY(${scrolled * 0.1}px)`;
             });
         });
     </script>
