@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linac Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 300vh;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .linac-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .linac {
+            width: 800px;
+            height: 600px;
+            transition: transform 0.3s ease-out;
+        }
+
+        .linac-part {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+            stroke: #2c3e50;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.5));
+        }
+
+        .linac-part.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-info {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            .linac {
+                width: 400px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="linac-container">
+        <svg class="linac" viewBox="0 0 800 600">
+            <!-- Gantry Base -->
+            <path class="linac-part" d="M300,500 L500,500 L500,480 L300,480 Z" fill="#2c3e50"/>
+            
+            <!-- Rotating Arm -->
+            <path class="linac-part" d="M350,480 L450,480 L500,300 L250,300 Z" fill="#3498db"/>
+            
+            <!-- Treatment Head -->
+            <path class="linac-part" d="M250,300 L500,300 L475,250 L275,250 Z" fill="#2c3e50"/>
+            
+            <!-- Collimator -->
+            <path class="linac-part" d="M300,250 L450,250 L425,200 L325,200 Z" fill="#3498db"/>
+            
+            <!-- Patient Table Base -->
+            <path class="linac-part" d="M200,450 L250,450 L250,430 L200,430 Z" fill="#2c3e50"/>
+            
+            <!-- Patient Table -->
+            <path class="linac-part" d="M150,430 L600,430 L600,410 L150,410 Z" fill="#3498db"/>
+            
+            <!-- Control Panel -->
+            <path class="linac-part" d="M550,500 L600,500 L600,350 L550,350 Z" fill="#2c3e50"/>
+            
+            <!-- Beam Direction Indicator -->
+            <path class="linac-part" d="M370,200 L380,200 L375,150 Z" fill="#e74c3c"/>
+            
+            <!-- Radiation Shield -->
+            <path class="linac-part" d="M275,250 L475,250 Q475,230 375,230 Q275,230 275,250" fill="#7f8c8d"/>
+        </svg>
+    </div>
+
+    <div class="scroll-info">Scroll nach unten um die Animation zu sehen</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const linacParts = document.querySelectorAll('.linac-part');
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            
+            function animateLinac() {
+                const scrollPosition = window.pageYOffset;
+                const scrollPercentage = (scrollPosition / totalScroll) * 100;
+                
+                linacParts.forEach((part, index) => {
+                    const partThreshold = (index / linacParts.length) * 100;
+                    
+                    if (scrollPercentage > partThreshold) {
+                        part.classList.add('visible');
+                    } else {
+                        part.classList.remove('visible');
+                    }
+                });
+
+                // Rotate the entire linac based on scroll
+                const rotation = (scrollPosition / totalScroll) * 360;
+                document.querySelector('.linac').style.transform = `rotate(${rotation}deg)`;
+                
+                requestAnimationFrame(animateLinac);
+            }
+
+            // Start the animation
+            animateLinac();
+        });
+    </script>
+</body>
+</html> 
