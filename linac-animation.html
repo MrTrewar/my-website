@@ -3,629 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINAC 3D Modell</title>
+    <title>LINAC 3D Modell - Technische Simulation</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --metal-color: #95a5a6;
-            --text-color: #333;
+            --metal-gray: #2C3E50;
+            --medical-white: #ECF0F1;
+            --accent-blue: #3498DB;
+            --dark-gray: #34495E;
+            --light-gray: #BDC3C7;
+            --screen-green: #2ECC71;
+            --warning-red: #E74C3C;
+            --tungsten: #4A4A4A;
+            --mlc-metal: #8B8B8B;
+            --stainless-steel: #B0B0B0;
+            --aluminum: #D3D3D3;
+            --carbon-fiber: #1A1A1A;
+            --copper: #B87333;
+            --chromium: #C0C0C0;
         }
 
         body {
             margin: 0;
             padding: 0;
-            min-height: 100vh;
-            background: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            perspective: 2000px;
-            overflow-x: hidden;
+            background: #1a1a1a;
+            perspective: 1500px;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         .scene {
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             transform-style: preserve-3d;
         }
 
-        .linac-model {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            transform-style: preserve-3d;
-            transform: rotateX(20deg) rotateY(0deg);
-            transition: transform 0.5s ease;
-        }
-
-        .part {
+        /* Treatment Room */
+        .treatment-room {
             position: absolute;
+            width: 100%;
+            height: 100%;
             transform-style: preserve-3d;
-            transition: all 1s ease;
-            opacity: 0;
-            transform: translateZ(-1000px);
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .part.visible {
-            opacity: 1;
             transform: translateZ(0);
-            box-shadow: 0 0 25px rgba(52, 152, 219, 0.3);
-            border: 2px solid rgba(52, 152, 219, 0.5);
         }
 
-        /* Gantry Structure */
-        .gantry-arm {
-            width: 600px;
-            height: 200px;
-            background: linear-gradient(45deg, var(--metal-color), #7f8c8d);
-            border-radius: 20px;
-            transform: rotateX(-90deg) translateZ(100px);
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        .floor {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--light-gray);
+            transform: rotateX(90deg) translateZ(-130px); /* 130cm scaled down */
         }
 
-        /* Treatment Head */
-        .treatment-head {
-            width: 200px;
-            height: 300px;
-            background: linear-gradient(45deg, #34495e, #2c3e50);
+        .walls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .wall {
+            position: absolute;
+            background: var(--medical-white);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.2);
+        }
+
+        .wall.back {
+            width: 100%;
+            height: 100%;
+            transform: translateZ(-500px);
+        }
+
+        .wall.left {
+            width: 100%;
+            height: 100%;
+            transform: rotateY(90deg) translateZ(-500px);
+        }
+
+        .wall.right {
+            width: 100%;
+            height: 100%;
+            transform: rotateY(-90deg) translateZ(-500px);
+        }
+
+        /* LINAC Gantry */
+        .gantry {
+            position: absolute;
+            width: 240px; /* 240cm scaled down */
+            height: 240px;
+            transform-style: preserve-3d;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) translateZ(130px); /* 130cm scaled down */
+        }
+
+        .gantry-ring {
+            width: 100%;
+            height: 100%;
+            border: 40px solid var(--aluminum);
+            border-radius: 50%;
+            position: absolute;
+            transform-style: preserve-3d;
+            animation: gantryRotation 20s linear infinite;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+        }
+
+        /* Beam Head Components */
+        .beam-head {
+            position: absolute;
+            width: 40px; /* 40cm scaled down */
+            height: 50px; /* 50cm scaled down */
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-35px) rotateX(45deg); /* -35cm scaled down */
+            transform-style: preserve-3d;
+            background: var(--stainless-steel);
+            border-radius: 5px;
+        }
+
+        .primary-collimator {
+            position: absolute;
+            width: 20px; /* 20cm scaled down */
+            height: 15px; /* 15cm scaled down */
+            background: var(--metal-gray);
+            top: 35px; /* 95cm - 130cm = -35cm scaled down */
+            left: 50%;
+            transform: translateX(-50%) translateY(-35px); /* -35cm scaled down */
             border-radius: 10px;
-            position: absolute;
-            right: 50px;
-            top: 50px;
-            transform-origin: top;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
         }
 
-        /* Beam Collimator */
-        .collimator {
-            width: 150px;
-            height: 150px;
-            background: linear-gradient(45deg, var(--secondary-color), #2980b9);
+        .flattening-filter {
             position: absolute;
-            bottom: 0;
-            left: 25px;
-            transform-origin: center;
-            transform: rotateX(0deg);
+            width: 15px; /* 15cm scaled down */
+            height: 5px; /* 5cm scaled down */
+            background: var(--tungsten);
+            top: 45px; /* 85cm - 130cm = -45cm scaled down */
+            left: 50%;
+            transform: translateX(-50%) translateY(-35px); /* -35cm scaled down */
+            border-radius: 7.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .ionization-chamber {
+            position: absolute;
+            width: 12px; /* 12cm scaled down */
+            height: 2px; /* 2cm scaled down */
+            background: var(--metal-gray);
+            top: 50px; /* 80cm - 130cm = -50cm scaled down */
+            left: 50%;
+            transform: translateX(-50%) translateY(-35px); /* -35cm scaled down */
+            border-radius: 1px;
+            box-shadow: 0 0 5px rgba(52,152,219,0.3);
+        }
+
+        .mlc-assembly {
+            position: absolute;
+            width: 40px; /* 40cm scaled down */
+            height: 10px; /* 10cm scaled down */
+            background: var(--mlc-metal);
+            top: 60px; /* 70cm - 130cm = -60cm scaled down */
+            left: 50%;
+            transform: translateX(-50%) translateY(-35px); /* -35cm scaled down */
+            transform-style: preserve-3d;
+            border-radius: 5px;
+        }
+
+        .mlc-leaves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5px;
+        }
+
+        .mlc-leaf {
+            width: 0.5px; /* 0.5cm scaled down */
+            height: 100%;
+            background: var(--tungsten);
+            transform-style: preserve-3d;
+            animation: mlcMovement 4s infinite;
         }
 
         /* Patient Table */
         .patient-table {
-            width: 400px;
-            height: 80px;
-            background: #ecf0f1;
             position: absolute;
-            bottom: -150px;
-            left: 200px;
-            transform: translateZ(100px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
+            width: 240px; /* 240cm scaled down */
+            height: 60px; /* 60cm scaled down */
+            background: var(--carbon-fiber);
+            bottom: -30px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateZ(90px); /* 90cm scaled down */
+            border-radius: 2px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .table-top {
+            position: absolute;
+            width: 100%;
+            height: 3px; /* 3cm scaled down */
+            background: var(--carbon-fiber);
+            top: 0;
+            border-radius: 2px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Beam Visualization */
+        .beam {
+            position: absolute;
+            width: 4px;
+            height: 300px;
+            background: linear-gradient(to bottom,
+                transparent,
+                var(--accent-blue),
+                transparent
+            );
+            left: 50%;
+            transform: translateX(-50%) translateY(-35px); /* -35cm scaled down */
+            animation: beamPulse 2s infinite;
+            filter: blur(2px);
+        }
+
+        /* Status Indicators */
+        .status-light {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--screen-green);
+            animation: statusBlink 1s infinite;
+        }
+
+        .status-light.warning {
+            background: var(--warning-red);
+        }
+
+        /* Position Indicator */
+        .angle-indicator {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background: var(--dark-gray);
+            color: var(--medical-white);
             display: flex;
-            gap: 1rem;
-            background: rgba(255,255,255,0.9);
-            padding: 1rem;
-            border-radius: 10px;
-            z-index: 1000;
-        }
-
-        .btn {
-            padding: 0.8rem 1.5rem;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
+            justify-content: center;
+            align-items: center;
+            font-family: monospace;
+            font-size: 16px;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
+            right: 20px;
+            top: 20px;
         }
 
-        .specs-panel {
+        @keyframes mlcMovement {
+            0%, 100% { transform: translateZ(0); }
+            50% { transform: translateZ(10px); }
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes beamPulse {
+            0% { opacity: 0.3; height: 280px; }
+            50% { opacity: 0.8; height: 300px; }
+            100% { opacity: 0.3; height: 280px; }
+        }
+
+        @keyframes gantryRotation {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        /* Interface */
+        .interface {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            max-width: 300px;
-            z-index: 1000;
-        }
-
-        .assembly-step {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .part-label {
-            position: absolute;
-            background: rgba(255,255,255,0.95);
-            padding: 0.8rem 1.2rem;
+            background: rgba(44, 62, 80, 0.9);
+            padding: 20px;
             border-radius: 8px;
-            font-size: 0.9rem;
-            color: var(--text-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transform: translateZ(50px);
-            opacity: 0;
-            transition: all 0.5s ease;
-            pointer-events: none;
-            z-index: 1000;
+            color: var(--medical-white);
+            font-family: monospace;
         }
 
-        .part-label.visible {
-            opacity: 1;
+        .parameter {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 14px;
         }
 
-        .part-label::before {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: rgba(255,255,255,0.95);
-            transform: rotate(45deg);
-            z-index: -1;
+        .parameter-value {
+            color: var(--accent-blue);
         }
 
-        .part-label.top::before {
-            bottom: -5px;
-            left: 50%;
-            margin-left: -5px;
-        }
-
-        .part-label.bottom::before {
-            top: -5px;
-            left: 50%;
-            margin-left: -5px;
-        }
-
-        .part-label.left::before {
-            right: -5px;
-            top: 50%;
-            margin-top: -5px;
-        }
-
-        .part-label.right::before {
-            left: -5px;
-            top: 50%;
-            margin-top: -5px;
-        }
-
-        .part-label .title {
-            font-weight: bold;
-            margin-bottom: 0.3rem;
-        }
-
-        .part-label .description {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        /* Beam Path Visualization */
-        .beam-path {
-            position: absolute;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, #e74c3c, transparent);
-            left: 50%;
-            transform-origin: top;
-            animation: beam 2s infinite;
-        }
-
-        @keyframes beam {
-            0% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.3; }
-        }
-
-        /* Component Details */
-        .electron-source {
-            width: 50px;
-            height: 50px;
-            background: #e74c3c;
-            position: absolute;
-            top: 0;
-            left: 75px;
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
-        }
-
-        .acceleration-tube {
-            width: 30px;
-            height: 200px;
-            background: linear-gradient(to bottom, #e74c3c, #3498db);
-            position: absolute;
-            top: 50px;
-            left: 85px;
-        }
-
-        .focusing-magnets {
-            width: 80px;
-            height: 40px;
-            background: #2980b9;
-            position: absolute;
-            top: 150px;
-            left: 60px;
-            border-radius: 5px;
-        }
-
-        .mlc-system {
-            width: 120px;
-            height: 60px;
-            background: #27ae60;
-            position: absolute;
+        /* Camera Controls */
+        .camera-controls {
+            position: fixed;
             bottom: 20px;
-            left: 40px;
-            transform-origin: center;
-            transform: rotateX(0deg);
+            right: 20px;
+            display: flex;
+            gap: 10px;
         }
 
-        /* Neue Komponenten-Styles */
-        .base-plate {
-            width: 800px;
-            height: 20px;
-            background: linear-gradient(45deg, var(--metal-color), #95a5a6);
-            position: absolute;
-            bottom: -200px;
-            left: 0;
-            transform: translateZ(0);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .cooling-system {
-            width: 100px;
-            height: 150px;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            position: absolute;
-            bottom: 50px;
-            left: -120px;
+        .control-btn {
+            background: var(--metal-gray);
+            color: var(--medical-white);
+            border: none;
+            padding: 10px 20px;
             border-radius: 5px;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
         }
 
-        .power-supply {
-            width: 120px;
-            height: 80px;
-            background: #34495e;
+        .control-btn:hover {
+            background: var(--accent-blue);
+        }
+
+        /* Control Room */
+        .control-room {
             position: absolute;
-            bottom: 30px;
-            right: -140px;
-            border-radius: 3px;
-            box-shadow: 0 0 20px rgba(52, 73, 94, 0.2);
+            width: 100px; /* 100cm scaled down */
+            height: 100px; /* 100cm scaled down */
+            background: rgba(44, 62, 80, 0.3);
+            left: -200px; /* -200cm scaled down */
+            top: 50%;
+            transform: translateY(-50%) translateZ(-350px); /* -350cm scaled down */
+            border-radius: 5px;
         }
 
-        .waveguide {
+        .control-window {
+            position: absolute;
+            width: 100px; /* 100cm scaled down */
+            height: 100px; /* 100cm scaled down */
+            background: rgba(255, 255, 255, 0.1);
+            left: -200px; /* -200cm scaled down */
+            top: 50%;
+            transform: translateY(-50%) translateZ(-300px); /* -300cm scaled down */
+            border-radius: 5px;
+        }
+
+        /* Iso Center Marker */
+        .iso-center {
+            position: absolute;
             width: 20px;
-            height: 100px;
-            background: #95a5a6;
-            position: absolute;
-            top: 100px;
-            right: 40px;
-            transform: rotate(-45deg);
-        }
-
-        .vacuum-system {
-            width: 60px;
-            height: 60px;
-            background: #7f8c8d;
-            position: absolute;
-            bottom: 40px;
-            left: 40px;
+            height: 20px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) translateZ(130px); /* 130cm scaled down */
+            border: 2px solid var(--accent-blue);
             border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-blue);
+            animation: isoPulse 2s infinite;
         }
 
-        .control-cabinet {
-            width: 150px;
-            height: 200px;
-            background: linear-gradient(45deg, #2c3e50, #34495e);
-            position: absolute;
-            bottom: -180px;
-            right: -200px;
-            border-radius: 5px;
+        @keyframes isoPulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
 
-        @keyframes highlight {
-            0% { box-shadow: 0 0 15px rgba(52, 152, 219, 0.2); }
-            50% { box-shadow: 0 0 30px rgba(52, 152, 219, 0.4); }
-            100% { box-shadow: 0 0 15px rgba(52, 152, 219, 0.2); }
-        }
-
-        .part.visible {
-            animation: highlight 2s ease-in-out;
+        @keyframes targetGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+            50% { box-shadow: 0 0 20px rgba(52,152,219,0.8); }
         }
     </style>
 </head>
 <body>
     <div class="scene">
-        <div class="linac-model">
-            <!-- Basis und Infrastruktur -->
-            <div class="part base-plate">
-                <div class="part-label bottom" style="bottom: -60px; left: 50%;">
-                    <div class="title">Grundplatte</div>
-                    <div class="description">Stabilisierte Basis</div>
-                </div>
+        <div class="treatment-room">
+            <div class="floor"></div>
+            <div class="walls">
+                <div class="wall back"></div>
+                <div class="wall left"></div>
+                <div class="wall right"></div>
             </div>
-            
-            <!-- Versorgungssysteme -->
-            <div class="part cooling-system">
-                <div class="part-label left" style="left: -180px; top: 50%;">
-                    <div class="title">Kühlsystem</div>
-                    <div class="description">Wasserkühlung 18°C</div>
-                </div>
-            </div>
-            
-            <div class="part power-supply">
-                <div class="part-label right" style="right: -200px; top: 50%;">
-                    <div class="title">Stromversorgung</div>
-                    <div class="description">400V / 50Hz</div>
-                </div>
-            </div>
-            
-            <div class="part vacuum-system">
-                <div class="part-label left" style="left: -160px; top: 0;">
-                    <div class="title">Vakuumsystem</div>
-                    <div class="description">10^-6 Torr</div>
+
+            <div class="control-room"></div>
+            <div class="control-window"></div>
+
+            <div class="gantry">
+                <div class="gantry-ring">
+                    <!-- Internal Components -->
+                    <div class="electron-gun"></div>
+                    <div class="waveguide"></div>
+                    <div class="bending-magnet"></div>
+                    <div class="tungsten-target"></div>
+                    
+                    <!-- Beam Head Components -->
+                    <div class="beam-head">
+                        <div class="primary-collimator"></div>
+                        <div class="flattening-filter"></div>
+                        <div class="ionization-chamber"></div>
+                        <div class="mlc-assembly">
+                            <div class="mlc-leaves">
+                                <!-- MLC leaves will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-light"></div>
+                    <div class="status-light warning" style="right: 20px;"></div>
+                    <div class="angle-indicator">0°</div>
+                    <div class="iso-center"></div>
                 </div>
             </div>
 
-            <!-- Hauptkomponenten -->
-            <div class="part gantry-arm">
-                <div class="beam-path"></div>
-                <div class="electron-source"></div>
-                <div class="acceleration-tube"></div>
-                <div class="focusing-magnets"></div>
-                <div class="mlc-system"></div>
-                <div class="waveguide"></div>
-                <div class="part-label top" style="top: -80px; left: 200px;">
-                    <div class="title">Gantry-Arm</div>
-                    <div class="description">Hauptträger des Beschleunigers</div>
-                </div>
+            <div class="patient-table">
+                <div class="table-top"></div>
             </div>
-            <div class="part treatment-head">
-                <div class="part-label right" style="right: -220px; top: 50%;">
-                    <div class="title">Behandlungskopf</div>
-                    <div class="description">Strahlführung und Formung</div>
-                </div>
-            </div>
-            <div class="part collimator">
-                <div class="part-label left" style="left: -200px; top: 50%;">
-                    <div class="title">Multi-Leaf Kollimator</div>
-                    <div class="description">Präzise Strahlformung</div>
-                </div>
-            </div>
-            <div class="part patient-table">
-                <div class="part-label bottom" style="bottom: -60px; left: 50%;">
-                    <div class="title">Patiententisch</div>
-                    <div class="description">6-Achsen Positionierung</div>
-                </div>
-            </div>
-            <!-- Zusätzliche Komponenten-Labels -->
-            <div class="part-label right" style="top: 50px; right: -180px;">
-                <div class="title">Elektronenquelle</div>
-                <div class="description">100-150 kV Kathode</div>
-            </div>
-            <div class="part-label left" style="top: 150px; left: -180px;">
-                <div class="title">Beschleunigungsröhre</div>
-                <div class="description">2-3m Länge, Vakuum 10^-6 Torr</div>
-            </div>
-            <div class="part-label right" style="top: 250px; right: -200px;">
-                <div class="title">Fokussierungsmagnete</div>
-                <div class="description">1-2 Tesla Magnetfeld</div>
-            </div>
-            <div class="part control-cabinet">
-                <div class="part-label right" style="right: -220px; top: 50%;">
-                    <div class="title">Steuerschrank</div>
-                    <div class="description">Digitale Kontrolle</div>
-                </div>
-            </div>
+
+            <div class="beam"></div>
         </div>
     </div>
 
-    <div class="controls">
-        <button class="btn" onclick="startAssembly()">Zusammenbau Starten</button>
-        <button class="btn" onclick="rotateLeft()">←</button>
-        <button class="btn" onclick="rotateRight()">→</button>
-        <button class="btn" onclick="rotateUp()">↑</button>
-        <button class="btn" onclick="rotateDown()">↓</button>
+    <div class="interface">
+        <div class="parameter">
+            <span>Gantry Position:</span>
+            <span id="gantry-angle">0°</span>
+        </div>
+        <div class="parameter">
+            <span>Beam Energy:</span>
+            <span>6 MV</span>
+        </div>
+        <div class="parameter">
+            <span>Dose Rate:</span>
+            <span>600 MU/min</span>
+        </div>
     </div>
 
-    <div class="specs-panel">
-        <h2>Technische Spezifikationen</h2>
-        <ul>
-            <li>Maximale Energie: 18 MV</li>
-            <li>Dosisrate: 600 MU/min</li>
-            <li>Genauigkeit: ±1mm</li>
-            <li>Gantry-Rotation: 360°</li>
-            <li>Strahlenschutz: Pb/W</li>
-            <li>Dosismonitoring: Echtzeit</li>
-            <li>Notfallabschaltung: < 100ms</li>
-        </ul>
-    </div>
-
-    <div class="assembly-step">
-        <h3>Montage-Schritt</h3>
-        <p id="step-description">Klicken Sie auf 'Zusammenbau Starten'</p>
+    <div class="camera-controls">
+        <button class="control-btn" onclick="setView('overview')">Übersicht</button>
+        <button class="control-btn" onclick="setView('gantry')">Gantry</button>
+        <button class="control-btn" onclick="setView('beam')">Strahlkopf</button>
+        <button class="control-btn" onclick="setView('internal')">Innenansicht</button>
     </div>
 
     <script>
-        const linacModel = document.querySelector('.linac-model');
-        const parts = document.querySelectorAll('.part');
-        let currentRotationX = 20;
-        let currentRotationY = 0;
-        let assemblyStep = 0;
-
-        function updateRotation() {
-            linacModel.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+        // Generate MLC leaves
+        function generateMLCLeaves() {
+            const mlcLeaves = document.querySelector('.mlc-leaves');
+            // Generate 120 leaves (60 pairs) with precise dimensions
+            for (let i = 0; i < 120; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'mlc-leaf';
+                // Add slight random movement to each leaf for more realistic appearance
+                leaf.style.transform = `translateZ(${Math.random() * 5}px)`;
+                mlcLeaves.appendChild(leaf);
+            }
         }
 
-        function rotateLeft() {
-            currentRotationY -= 5;
-            updateRotation();
+        // Camera views with precise positioning
+        function setView(view) {
+            const scene = document.querySelector('.scene');
+            switch(view) {
+                case 'overview':
+                    scene.style.transform = 'rotateX(45deg) rotateY(0deg)';
+                    break;
+                case 'gantry':
+                    scene.style.transform = 'rotateX(30deg) rotateY(45deg)';
+                    break;
+                case 'beam':
+                    scene.style.transform = 'rotateX(60deg) rotateY(180deg)';
+                    break;
+                case 'internal':
+                    scene.style.transform = 'rotateX(45deg) rotateY(90deg)';
+                    break;
+            }
         }
 
-        function rotateRight() {
-            currentRotationY += 5;
-            updateRotation();
-        }
+        // Update gantry angle display with precise rotation
+        setInterval(() => {
+            const angle = (Date.now() / 55.5) % 360;
+            document.getElementById('gantry-angle').textContent = angle.toFixed(1) + '°';
+            document.querySelector('.angle-indicator').textContent = angle.toFixed(1) + '°';
+        }, 100);
 
-        function rotateUp() {
-            currentRotationX = Math.max(-30, currentRotationX - 5);
-            updateRotation();
-        }
+        // Mouse rotation control with improved precision
+        let isDragging = false;
+        let startX, startY;
+        let rotateX = 45;
+        let rotateY = 0;
 
-        function rotateDown() {
-            currentRotationX = Math.min(60, currentRotationX + 5);
-            updateRotation();
-        }
-
-        function startAssembly() {
-            const steps = [
-                {
-                    element: document.querySelector('.base-plate'),
-                    description: "Installation der Grundplatte",
-                    labels: document.querySelectorAll('.base-plate .part-label')
-                },
-                {
-                    element: document.querySelector('.cooling-system'),
-                    description: "Montage des Kühlsystems",
-                    labels: document.querySelectorAll('.cooling-system .part-label')
-                },
-                {
-                    element: document.querySelector('.power-supply'),
-                    description: "Installation der Stromversorgung",
-                    labels: document.querySelectorAll('.power-supply .part-label')
-                },
-                {
-                    element: document.querySelector('.vacuum-system'),
-                    description: "Einbau des Vakuumsystems",
-                    labels: document.querySelectorAll('.vacuum-system .part-label')
-                },
-                {
-                    element: parts[0],
-                    description: "Montage der Gantry-Struktur",
-                    labels: document.querySelectorAll('.gantry-arm .part-label')
-                },
-                {
-                    element: document.querySelector('.electron-source'),
-                    description: "Installation der Elektronenquelle",
-                    labels: document.querySelectorAll('.electron-source .part-label')
-                },
-                {
-                    element: document.querySelector('.acceleration-tube'),
-                    description: "Einbau der Beschleunigungsröhre",
-                    labels: document.querySelectorAll('.acceleration-tube .part-label')
-                },
-                {
-                    element: document.querySelector('.waveguide'),
-                    description: "Montage des Wellenleiters",
-                    labels: document.querySelectorAll('.waveguide .part-label')
-                },
-                {
-                    element: parts[1],
-                    description: "Installation des Behandlungskopfes",
-                    labels: document.querySelectorAll('.treatment-head .part-label')
-                },
-                {
-                    element: parts[2],
-                    description: "Einbau des Kollimator-Systems",
-                    labels: document.querySelectorAll('.collimator .part-label')
-                },
-                {
-                    element: parts[3],
-                    description: "Positionierung des Patiententisches",
-                    labels: document.querySelectorAll('.patient-table .part-label')
-                },
-                {
-                    element: document.querySelector('.control-cabinet'),
-                    description: "Installation des Steuerschranks",
-                    labels: document.querySelectorAll('.control-cabinet .part-label')
-                },
-                {
-                    element: document.querySelector('.focusing-magnets'),
-                    description: "Einbau der Fokussierungsmagnete",
-                    labels: document.querySelectorAll('.focusing-magnets .part-label')
-                }
-            ];
-
-            assemblyStep = 0;
-            // Reset all parts and labels
-            document.querySelectorAll('.part, .part-label').forEach(el => el.classList.remove('visible'));
-
-            const interval = setInterval(() => {
-                if (assemblyStep >= steps.length) {
-                    clearInterval(interval);
-                    document.getElementById('step-description').textContent = "Montage abgeschlossen";
-                    return;
-                }
-
-                const step = steps[assemblyStep];
-                if (step.element) {
-                    step.element.classList.add('visible');
-                }
-                if (step.labels) {
-                    step.labels.forEach(label => label.classList.add('visible'));
-                }
-                document.getElementById('step-description').textContent = step.description;
-                assemblyStep++;
-            }, 2000);
-        }
-
-        // Verbesserte Touch-Steuerung für Labels
-        document.querySelectorAll('.part-label').forEach(label => {
-            label.style.transform = `translateZ(50px)`;
+        document.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
         });
 
-        function updateLabels() {
-            document.querySelectorAll('.part-label').forEach(label => {
-                const parentRotation = label.closest('.part')?.style.transform || '';
-                label.style.transform = `translateZ(50px) ${parentRotation}`;
-            });
-        }
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
 
-        // Erweitere die updateRotation Funktion
-        const originalUpdateRotation = updateRotation;
-        updateRotation = function() {
-            originalUpdateRotation();
-            updateLabels();
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            // More precise rotation control
+            rotateY += deltaX * 0.3;
+            rotateX = Math.max(0, Math.min(90, rotateX + deltaY * 0.3));
+
+            const scene = document.querySelector('.scene');
+            scene.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Initialize with precise positioning
+        window.onload = () => {
+            generateMLCLeaves();
+            setView('overview');
         };
-
-        // Touch controls
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            const touchX = e.touches[0].clientX;
-            const touchY = e.touches[0].clientY;
-            
-            const deltaX = touchX - touchStartX;
-            const deltaY = touchY - touchStartY;
-            
-            currentRotationY += deltaX * 0.5;
-            currentRotationX = Math.max(-30, Math.min(60, currentRotationX - deltaY * 0.5));
-            
-            touchStartX = touchX;
-            touchStartY = touchY;
-            
-            updateRotation();
-        });
     </script>
 </body>
 </html> 
