@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linac Assembly Animation</title>
+    <title>Complete Linac Assembly Animation</title>
     <style>
         body {
             margin: 0;
@@ -126,9 +126,56 @@
                 height: 400px;
             }
         }
+
+        .component-info {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: #3498db;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            max-width: 300px;
+            pointer-events: none;
+        }
+
+        .component-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: #fff;
+        }
+
+        .component-info p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .linac-part:hover {
+            filter: drop-shadow(0 0 20px rgba(52, 152, 219, 0.9));
+            cursor: pointer;
+        }
+
+        .technical-label {
+            fill: #e74c3c;
+            font-size: 12px;
+            font-family: monospace;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .measurement-detail {
+            fill: rgba(41, 128, 185, 0.5);
+            font-size: 10px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
+    <div class="component-info" id="componentInfo">
+        <h3>Linearbeschleuniger</h3>
+        <p>Scrollen Sie, um den LINAC zusammenzubauen und mehr über die Komponenten zu erfahren.</p>
+    </div>
+
     <div class="linac-container">
         <div class="blueprint-grid"></div>
         <svg class="linac" viewBox="0 0 1000 800">
@@ -142,14 +189,18 @@
                 <text class="measurement-text" x="375" y="445">450cm</text>
                 <line class="measurement-line" x1="300" y1="500" x2="500" y2="500" />
                 <text class="measurement-text" x="400" y="515">200cm</text>
+                <text class="measurement-detail" x="320" y="535">Rotationswinkel: 360°</text>
+                <text class="measurement-detail" x="620" y="435">Tischhöhe: 70-140cm</text>
+                <text class="measurement-detail" x="180" y="200">Strahlenergie: 6-18 MV</text>
             </g>
 
             <!-- Patient Table System -->
-            <g class="linac-part" style="--fly-x: -800px; --fly-y: 100px">
+            <g class="linac-part" style="--fly-x: -800px; --fly-y: 100px" data-info="Fundament und Kabelführung">
                 <!-- Table Base -->
                 <path d="M200,450 L250,450 L250,430 L200,430 Z" fill="#2c3e50"/>
                 <path d="M190,460 L260,460 L255,450 L195,450 Z" fill="#34495e"/>
                 <text class="part-label" x="210" y="490">Table Base</text>
+                <text class="technical-label" x="260" y="510">Power: 400V AC</text>
             </g>
 
             <g class="linac-part" style="--fly-x: 800px; --fly-y: 50px">
@@ -160,11 +211,12 @@
             </g>
 
             <!-- Gantry System -->
-            <g class="linac-part" style="--fly-x: 0; --fly-y: 800px">
+            <g class="linac-part" style="--fly-x: 0; --fly-y: 800px" data-info="Hauptrotationssystem">
                 <!-- Main Base -->
                 <path d="M300,500 L500,500 L500,480 L300,480 Z" fill="#2c3e50"/>
                 <path d="M290,510 L510,510 L500,500 L300,500 Z" fill="#34495e"/>
                 <text class="part-label" x="380" y="525">Gantry Base</text>
+                <text class="technical-label" x="310" y="495">±185° Rotation</text>
             </g>
 
             <g class="linac-part" style="--fly-x: -600px; --fly-y: -200px">
@@ -174,25 +226,27 @@
                 <text class="part-label" x="350" y="400">Rotating Gantry</text>
             </g>
 
-            <g class="linac-part" style="--fly-x: 600px; --fly-y: -400px">
+            <g class="linac-part" style="--fly-x: 600px; --fly-y: -400px" data-info="Strahlformung und Monitoring">
                 <!-- Treatment Head -->
                 <path d="M250,300 L500,300 L475,250 L275,250 Z" fill="#2c3e50"/>
                 <path d="M260,290 L490,290 L465,240 L285,240 Z" fill="#34495e"/>
                 <text class="part-label" x="340" y="280">Treatment Head</text>
+                <text class="technical-label" x="280" y="270">Target: W/Cu</text>
             </g>
 
-            <g class="linac-part" style="--fly-x: 0; --fly-y: -600px">
+            <g class="linac-part" style="--fly-x: 0; --fly-y: -600px" data-info="Präzise Strahlformung">
                 <!-- Collimator System -->
-                <path d="M300,250 L450,250 L425,200 L325,200 Z" fill="#3498db"/>
-                <path d="M310,240 L440,240 L415,190 L335,190 Z" fill="#2980b9"/>
-                <text class="part-label" x="340" y="230">Collimator</text>
+                <path d="M300,250 L450,250 L425,200 L325,200 Z" fill="#27ae60"/>
+                <text class="part-label" x="340" y="230">MLC System</text>
+                <text class="technical-label" x="350" y="215">120 Leaves</text>
             </g>
 
-            <g class="linac-part" style="--fly-x: 700px; --fly-y: -100px">
+            <g class="linac-part" style="--fly-x: 700px; --fly-y: -100px" data-info="Steuerung und Überwachung">
                 <!-- Control Panel -->
                 <path d="M550,500 L600,500 L600,350 L550,350 Z" fill="#2c3e50"/>
                 <path d="M560,490 L590,490 L590,360 L560,360 Z" fill="#34495e"/>
                 <text class="part-label" x="530" y="420">Control Panel</text>
+                <text class="technical-label" x="555" y="400">Control PC</text>
             </g>
 
             <g class="linac-part" style="--fly-x: 0; --fly-y: -800px">
@@ -202,11 +256,12 @@
                 <text class="part-label" x="390" y="175">Beam Guide</text>
             </g>
 
-            <g class="linac-part" style="--fly-x: -400px; --fly-y: -300px">
+            <g class="linac-part" style="--fly-x: -400px; --fly-y: -300px" data-info="Strahlenschutz">
                 <!-- Radiation Shield -->
                 <path d="M275,250 L475,250 Q475,230 375,230 Q275,230 275,250" fill="#7f8c8d"/>
                 <path d="M285,245 L465,245 Q465,225 375,225 Q285,225 285,245" fill="#95a5a6"/>
                 <text class="part-label" x="320" y="255">Radiation Shield</text>
+                <text class="technical-label" x="300" y="240">Pb/W Shield</text>
             </g>
         </svg>
     </div>
@@ -256,6 +311,28 @@
 
             // Start the animation
             animateLinac();
+
+            // Component information display
+            const componentInfo = document.getElementById('componentInfo');
+
+            linacParts.forEach(part => {
+                part.addEventListener('mouseenter', () => {
+                    const info = part.getAttribute('data-info');
+                    if (info) {
+                        componentInfo.innerHTML = `
+                            <h3>${part.querySelector('.part-label').textContent}</h3>
+                            <p>${info}</p>
+                        `;
+                    }
+                });
+
+                part.addEventListener('mouseleave', () => {
+                    componentInfo.innerHTML = `
+                        <h3>Linearbeschleuniger</h3>
+                        <p>Scrollen Sie, um den LINAC zusammenzubauen und mehr über die Komponenten zu erfahren.</p>
+                    `;
+                });
+            });
         });
     </script>
 </body>
