@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linac Animation</title>
+    <title>Linac Assembly Animation</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             min-height: 300vh;
-            background: #f0f2f5;
+            background: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-x: hidden;
         }
 
         .linac-container {
@@ -24,26 +25,63 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            perspective: 1000px;
         }
 
         .linac {
-            width: 800px;
-            height: 600px;
-            transition: transform 0.3s ease-out;
+            width: 1000px;
+            height: 800px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+        }
+
+        .blueprint-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(41, 128, 185, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(41, 128, 185, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
         }
 
         .linac-part {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease-out;
-            stroke: #2c3e50;
+            transform: translate(var(--fly-x, -1000px), var(--fly-y, 0));
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            stroke: #3498db;
             stroke-width: 2;
-            filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.5));
+            filter: drop-shadow(0 0 15px rgba(52, 152, 219, 0.7));
         }
 
         .linac-part.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate(0, 0);
+        }
+
+        .measurement-line {
+            stroke: rgba(41, 128, 185, 0.4);
+            stroke-width: 1;
+            stroke-dasharray: 5,5;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .measurement-text {
+            fill: rgba(41, 128, 185, 0.7);
+            font-size: 12px;
+            font-family: monospace;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .part-label {
+            fill: #3498db;
+            font-size: 14px;
+            font-family: monospace;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .scroll-info {
@@ -55,7 +93,7 @@
             color: white;
             padding: 1rem 2rem;
             border-radius: 5px;
-            font-family: Arial, sans-serif;
+            font-family: monospace;
             animation: bounce 2s infinite;
         }
 
@@ -64,70 +102,154 @@
             50% { transform: translateX(-50%) translateY(-10px); }
         }
 
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(52, 152, 219, 0.7)); }
+            50% { filter: drop-shadow(0 0 25px rgba(52, 152, 219, 0.9)); }
+        }
+
+        .assembly-line {
+            stroke: #3498db;
+            stroke-width: 2;
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 1000;
+            }
+        }
+
         @media (max-width: 768px) {
             .linac {
-                width: 400px;
-                height: 300px;
+                width: 500px;
+                height: 400px;
             }
         }
     </style>
 </head>
 <body>
     <div class="linac-container">
-        <svg class="linac" viewBox="0 0 800 600">
-            <!-- Gantry Base -->
-            <path class="linac-part" d="M300,500 L500,500 L500,480 L300,480 Z" fill="#2c3e50"/>
-            
-            <!-- Rotating Arm -->
-            <path class="linac-part" d="M350,480 L450,480 L500,300 L250,300 Z" fill="#3498db"/>
-            
-            <!-- Treatment Head -->
-            <path class="linac-part" d="M250,300 L500,300 L475,250 L275,250 Z" fill="#2c3e50"/>
-            
-            <!-- Collimator -->
-            <path class="linac-part" d="M300,250 L450,250 L425,200 L325,200 Z" fill="#3498db"/>
-            
-            <!-- Patient Table Base -->
-            <path class="linac-part" d="M200,450 L250,450 L250,430 L200,430 Z" fill="#2c3e50"/>
-            
-            <!-- Patient Table -->
-            <path class="linac-part" d="M150,430 L600,430 L600,410 L150,410 Z" fill="#3498db"/>
-            
-            <!-- Control Panel -->
-            <path class="linac-part" d="M550,500 L600,500 L600,350 L550,350 Z" fill="#2c3e50"/>
-            
-            <!-- Beam Direction Indicator -->
-            <path class="linac-part" d="M370,200 L380,200 L375,150 Z" fill="#e74c3c"/>
-            
-            <!-- Radiation Shield -->
-            <path class="linac-part" d="M275,250 L475,250 Q475,230 375,230 Q275,230 275,250" fill="#7f8c8d"/>
+        <div class="blueprint-grid"></div>
+        <svg class="linac" viewBox="0 0 1000 800">
+            <!-- Assembly Guidelines -->
+            <path class="assembly-line" d="M0,400 H1000" />
+            <path class="assembly-line" d="M500,0 V800" />
+
+            <!-- Measurement Lines and Labels -->
+            <g class="measurements">
+                <line class="measurement-line" x1="150" y1="430" x2="600" y2="430" />
+                <text class="measurement-text" x="375" y="445">450cm</text>
+                <line class="measurement-line" x1="300" y1="500" x2="500" y2="500" />
+                <text class="measurement-text" x="400" y="515">200cm</text>
+            </g>
+
+            <!-- Patient Table System -->
+            <g class="linac-part" style="--fly-x: -800px; --fly-y: 100px">
+                <!-- Table Base -->
+                <path d="M200,450 L250,450 L250,430 L200,430 Z" fill="#2c3e50"/>
+                <path d="M190,460 L260,460 L255,450 L195,450 Z" fill="#34495e"/>
+                <text class="part-label" x="210" y="490">Table Base</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: 800px; --fly-y: 50px">
+                <!-- Table Top -->
+                <path d="M150,430 L600,430 L600,410 L150,410 Z" fill="#3498db"/>
+                <path d="M160,410 L590,410 L580,400 L170,400 Z" fill="#2980b9"/>
+                <text class="part-label" x="350" y="450">Patient Table</text>
+            </g>
+
+            <!-- Gantry System -->
+            <g class="linac-part" style="--fly-x: 0; --fly-y: 800px">
+                <!-- Main Base -->
+                <path d="M300,500 L500,500 L500,480 L300,480 Z" fill="#2c3e50"/>
+                <path d="M290,510 L510,510 L500,500 L300,500 Z" fill="#34495e"/>
+                <text class="part-label" x="380" y="525">Gantry Base</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: -600px; --fly-y: -200px">
+                <!-- Rotating Arm -->
+                <path d="M350,480 L450,480 L500,300 L250,300 Z" fill="#3498db"/>
+                <path d="M360,470 L440,470 L490,290 L260,290 Z" fill="#2980b9"/>
+                <text class="part-label" x="350" y="400">Rotating Gantry</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: 600px; --fly-y: -400px">
+                <!-- Treatment Head -->
+                <path d="M250,300 L500,300 L475,250 L275,250 Z" fill="#2c3e50"/>
+                <path d="M260,290 L490,290 L465,240 L285,240 Z" fill="#34495e"/>
+                <text class="part-label" x="340" y="280">Treatment Head</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: 0; --fly-y: -600px">
+                <!-- Collimator System -->
+                <path d="M300,250 L450,250 L425,200 L325,200 Z" fill="#3498db"/>
+                <path d="M310,240 L440,240 L415,190 L335,190 Z" fill="#2980b9"/>
+                <text class="part-label" x="340" y="230">Collimator</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: 700px; --fly-y: -100px">
+                <!-- Control Panel -->
+                <path d="M550,500 L600,500 L600,350 L550,350 Z" fill="#2c3e50"/>
+                <path d="M560,490 L590,490 L590,360 L560,360 Z" fill="#34495e"/>
+                <text class="part-label" x="530" y="420">Control Panel</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: 0; --fly-y: -800px">
+                <!-- Beam System -->
+                <path d="M370,200 L380,200 L375,150 Z" fill="#e74c3c"/>
+                <circle cx="375" cy="180" r="5" fill="#c0392b"/>
+                <text class="part-label" x="390" y="175">Beam Guide</text>
+            </g>
+
+            <g class="linac-part" style="--fly-x: -400px; --fly-y: -300px">
+                <!-- Radiation Shield -->
+                <path d="M275,250 L475,250 Q475,230 375,230 Q275,230 275,250" fill="#7f8c8d"/>
+                <path d="M285,245 L465,245 Q465,225 375,225 Q285,225 285,245" fill="#95a5a6"/>
+                <text class="part-label" x="320" y="255">Radiation Shield</text>
+            </g>
         </svg>
     </div>
 
-    <div class="scroll-info">Scroll nach unten um die Animation zu sehen</div>
+    <div class="scroll-info">Scroll to assemble LINAC</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const linacParts = document.querySelectorAll('.linac-part');
+            const measurements = document.querySelectorAll('.measurement-line, .measurement-text');
             const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
             
             function animateLinac() {
                 const scrollPosition = window.pageYOffset;
                 const scrollPercentage = (scrollPosition / totalScroll) * 100;
                 
+                // Show measurements first
+                if (scrollPercentage > 10) {
+                    measurements.forEach(measure => {
+                        measure.style.opacity = '1';
+                    });
+                }
+
+                // Animate parts with delay
                 linacParts.forEach((part, index) => {
-                    const partThreshold = (index / linacParts.length) * 100;
+                    const partThreshold = (index / linacParts.length) * 80 + 20; // Start after measurements
                     
                     if (scrollPercentage > partThreshold) {
                         part.classList.add('visible');
+                        // Add glow animation after part appears
+                        setTimeout(() => {
+                            part.style.animation = 'glow 2s infinite';
+                        }, 1000);
                     } else {
                         part.classList.remove('visible');
+                        part.style.animation = '';
                     }
                 });
 
-                // Rotate the entire linac based on scroll
-                const rotation = (scrollPosition / totalScroll) * 360;
-                document.querySelector('.linac').style.transform = `rotate(${rotation}deg)`;
+                // Rotate for 3D effect
+                const rotation = (scrollPosition / totalScroll) * 30 - 15; // -15° to 15°
+                document.querySelector('.linac').style.transform = 
+                    `rotateX(${rotation}deg) rotateY(${rotation * 2}deg)`;
                 
                 requestAnimationFrame(animateLinac);
             }
