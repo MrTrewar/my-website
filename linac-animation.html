@@ -3,114 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINAC Animation - 3D</title>
+    <title>LINAC Patent 3D Model</title>
     <style>
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
             --accent-color: #e74c3c;
+            --metal-color: #95a5a6;
             --text-color: #333;
-            --light-bg: #f8f9fa;
         }
 
         body {
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: var(--light-bg);
+            background: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            perspective: 1000px;
+            perspective: 2000px;
+            overflow-x: hidden;
         }
 
-        .container {
-            flex: 1;
+        .scene {
+            width: 100vw;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            padding: 2rem;
             transform-style: preserve-3d;
         }
 
-        .linac-container {
+        .linac-model {
             position: relative;
             width: 800px;
-            height: 400px;
-            margin: 2rem auto;
+            height: 600px;
             transform-style: preserve-3d;
-            transform: rotateX(10deg) rotateY(0deg);
+            transform: rotateX(20deg) rotateY(0deg);
             transition: transform 0.5s ease;
         }
 
-        .linac-container:hover {
-            transform: rotateX(10deg) rotateY(5deg);
+        .part {
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: all 1s ease;
+            opacity: 0;
+            transform: translateZ(-1000px);
         }
 
-        .linac {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, #2c3e50, #3498db);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform-style: preserve-3d;
+        .part.visible {
+            opacity: 1;
             transform: translateZ(0);
         }
 
-        .linac::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateZ(1px);
-            animation: shine 3s infinite;
+        /* Gantry Structure (Based on FIG.1) */
+        .gantry-arm {
+            width: 600px;
+            height: 200px;
+            background: var(--metal-color);
+            border-radius: 20px;
+            transform: rotateX(-90deg) translateZ(100px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
         }
 
-        .component {
-            position: absolute;
-            background: rgba(255,255,255,0.9);
+        /* Treatment Head (Based on FIG.2) */
+        .treatment-head {
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(45deg, #34495e, #2c3e50);
             border-radius: 10px;
-            padding: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform-style: preserve-3d;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .component:hover {
-            transform: translateZ(20px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .component h3 {
-            margin: 0 0 0.5rem 0;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-
-        .component p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-color);
-        }
-
-        .electron-beam {
             position: absolute;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, #e74c3c, transparent);
-            transform: translateZ(10px);
-            animation: beam 2s infinite;
+            right: 50px;
+            top: 50px;
+            transform-origin: top;
+        }
+
+        /* Beam Collimator (Based on FIG.3) */
+        .collimator {
+            width: 150px;
+            height: 150px;
+            background: var(--secondary-color);
+            position: absolute;
+            bottom: 0;
+            left: 25px;
+            transform-origin: center;
+            transform: rotateX(0deg);
+        }
+
+        /* Patient Table (Based on FIG.1) */
+        .patient-table {
+            width: 400px;
+            height: 80px;
+            background: #ecf0f1;
+            position: absolute;
+            bottom: -150px;
+            left: 200px;
+            transform: translateZ(100px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .controls {
-            margin-top: 2rem;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             gap: 1rem;
+            background: rgba(255,255,255,0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            z-index: 1000;
         }
 
         .btn {
@@ -123,20 +123,6 @@
             transition: background 0.3s;
         }
 
-        .btn:hover {
-            background: #2980b9;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateZ(1px); }
-            100% { transform: translateX(100%) translateZ(1px); }
-        }
-
-        @keyframes beam {
-            0% { transform: translateX(-100%) translateZ(10px); }
-            100% { transform: translateX(100%) translateZ(10px); }
-        }
-
         .specs-panel {
             position: fixed;
             top: 20px;
@@ -145,145 +131,142 @@
             padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateZ(50px);
             max-width: 300px;
+            z-index: 1000;
         }
 
-        .specs-panel h2 {
-            margin: 0 0 1rem 0;
-            color: var(--primary-color);
-        }
-
-        .specs-panel ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .specs-panel li {
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--text-color);
-        }
-
-        .rotation-controls {
+        .assembly-step {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 1rem;
-            background: rgba(255,255,255,0.9);
-            padding: 1rem;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform-style: preserve-3d;
+            z-index: 1000;
         }
 
-        .rotation-btn {
-            padding: 0.5rem 1rem;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
+        .part-label {
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 0.5rem;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
+            font-size: 0.8rem;
+            pointer-events: none;
+            transition: opacity 0.3s;
         }
 
-        .rotation-btn:hover {
+        /* Beam Path Visualization */
+        .beam-path {
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, #e74c3c, transparent);
+            left: 50%;
+            transform-origin: top;
+            animation: beam 2s infinite;
+        }
+
+        @keyframes beam {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.3; }
+        }
+
+        /* Component Details from Patent */
+        .electron-source {
+            width: 50px;
+            height: 50px;
+            background: #e74c3c;
+            position: absolute;
+            top: 0;
+            left: 75px;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .acceleration-tube {
+            width: 30px;
+            height: 200px;
+            background: linear-gradient(to bottom, #e74c3c, #3498db);
+            position: absolute;
+            top: 50px;
+            left: 85px;
+        }
+
+        .focusing-magnets {
+            width: 80px;
+            height: 40px;
             background: #2980b9;
+            position: absolute;
+            top: 150px;
+            left: 60px;
+            border-radius: 5px;
         }
 
-        @media (max-width: 768px) {
-            .linac-container {
-                width: 100%;
-                height: 300px;
-            }
-
-            .specs-panel {
-                position: static;
-                margin: 1rem auto;
-                max-width: 100%;
-            }
-
-            .rotation-controls {
-                position: static;
-                margin: 1rem auto;
-                transform: none;
-            }
+        .mlc-system {
+            width: 120px;
+            height: 60px;
+            background: #27ae60;
+            position: absolute;
+            bottom: 20px;
+            left: 40px;
+            transform-origin: center;
+            transform: rotateX(0deg);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>3D LINAC Animation</h1>
-        <div class="linac-container">
-            <div class="linac">
-                <div class="electron-beam"></div>
-                <div class="component" style="top: 20%; left: 10%; transform: translateZ(30px);">
-                    <h3>Elektronenquelle</h3>
-                    <p>Spannung: 100 kV</p>
-                </div>
-                <div class="component" style="top: 30%; left: 30%; transform: translateZ(20px);">
-                    <h3>Beschleunigungsröhre</h3>
-                    <p>Länge: 2.5 m</p>
-                </div>
-                <div class="component" style="top: 40%; left: 50%; transform: translateZ(40px);">
-                    <h3>Fokussierungseinheit</h3>
-                    <p>Magnetfeld: 1.5 T</p>
-                </div>
-                <div class="component" style="top: 20%; left: 70%; transform: translateZ(25px);">
-                    <h3>Strahlformung</h3>
-                    <p>MLC: 160 Blätter</p>
-                </div>
+    <div class="scene">
+        <div class="linac-model">
+            <!-- Hauptkomponenten basierend auf dem Patent -->
+            <div class="part gantry-arm">
+                <div class="beam-path"></div>
+                <div class="electron-source"></div>
+                <div class="acceleration-tube"></div>
+                <div class="focusing-magnets"></div>
+                <div class="mlc-system"></div>
             </div>
+            <div class="part treatment-head"></div>
+            <div class="part collimator"></div>
+            <div class="part patient-table"></div>
         </div>
-        <div class="controls">
-            <button class="btn" onclick="startAnimation()">Animation Starten</button>
-            <button class="btn" onclick="stopAnimation()">Animation Stoppen</button>
-        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="startAssembly()">Zusammenbau Starten</button>
+        <button class="btn" onclick="rotateLeft()">←</button>
+        <button class="btn" onclick="rotateRight()">→</button>
+        <button class="btn" onclick="rotateUp()">↑</button>
+        <button class="btn" onclick="rotateDown()">↓</button>
     </div>
 
     <div class="specs-panel">
-        <h2>Technische Spezifikationen</h2>
+        <h2>Patent US 3,322,950</h2>
         <ul>
-            <li>Maximale Energie: 18 MV</li>
-            <li>Dosisrate: 600 MU/min</li>
-            <li>Genauigkeit: ±1mm</li>
-            <li>Gantry-Rotation: 360°</li>
+            <li>Erfinder: J. S. Bailey et al.</li>
+            <li>Jahr: 1967</li>
+            <li>Strahlenergie: bis 18 MV</li>
+            <li>Gantry-Rotation: ±185°</li>
+            <li>Kollimator: Multi-Leaf</li>
+            <li>Vakuum: 10^-6 Torr</li>
         </ul>
     </div>
 
-    <div class="rotation-controls">
-        <button class="rotation-btn" onclick="rotateLeft()">←</button>
-        <button class="rotation-btn" onclick="rotateRight()">→</button>
-        <button class="rotation-btn" onclick="rotateUp()">↑</button>
-        <button class="rotation-btn" onclick="rotateDown()">↓</button>
+    <div class="assembly-step">
+        <h3>Montage-Schritt</h3>
+        <p id="step-description">Klicken Sie auf 'Zusammenbau Starten'</p>
     </div>
 
     <script>
-        let currentRotationX = 10;
+        const linacModel = document.querySelector('.linac-model');
+        const parts = document.querySelectorAll('.part');
+        let currentRotationX = 20;
         let currentRotationY = 0;
-        const linacContainer = document.querySelector('.linac-container');
-        let animationInterval;
-
-        function startAnimation() {
-            if (animationInterval) return;
-            animationInterval = setInterval(() => {
-                currentRotationY += 1;
-                updateRotation();
-            }, 50);
-        }
-
-        function stopAnimation() {
-            if (animationInterval) {
-                clearInterval(animationInterval);
-                animationInterval = null;
-            }
-        }
+        let assemblyStep = 0;
 
         function updateRotation() {
-            linacContainer.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+            linacModel.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
         }
 
         function rotateLeft() {
@@ -302,11 +285,33 @@
         }
 
         function rotateDown() {
-            currentRotationX = Math.min(30, currentRotationX + 5);
+            currentRotationX = Math.min(60, currentRotationX + 5);
             updateRotation();
         }
 
-        // Touch controls for mobile
+        function startAssembly() {
+            const steps = [
+                { element: parts[0], description: "Montage der Gantry-Struktur" },
+                { element: parts[1], description: "Installation des Behandlungskopfes" },
+                { element: parts[2], description: "Einbau des Kollimator-Systems" },
+                { element: parts[3], description: "Positionierung des Patiententisches" }
+            ];
+
+            assemblyStep = 0;
+            const interval = setInterval(() => {
+                if (assemblyStep >= steps.length) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                const step = steps[assemblyStep];
+                step.element.classList.add('visible');
+                document.getElementById('step-description').textContent = step.description;
+                assemblyStep++;
+            }, 2000);
+        }
+
+        // Touch controls
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -323,7 +328,7 @@
             const deltaY = touchY - touchStartY;
             
             currentRotationY += deltaX * 0.5;
-            currentRotationX = Math.max(-30, Math.min(30, currentRotationX - deltaY * 0.5));
+            currentRotationX = Math.max(-30, Math.min(60, currentRotationX - deltaY * 0.5));
             
             touchStartX = touchX;
             touchStartY = touchY;
@@ -332,5 +337,4 @@
         });
     </script>
 </body>
-</html> 
 </html> 
