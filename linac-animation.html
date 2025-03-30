@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINAC Patent 3D Model</title>
+    <title>LINAC 3D Modell</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -54,7 +54,7 @@
             transform: translateZ(0);
         }
 
-        /* Gantry Structure (Based on FIG.1) */
+        /* Gantry Structure */
         .gantry-arm {
             width: 600px;
             height: 200px;
@@ -64,7 +64,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
         }
 
-        /* Treatment Head (Based on FIG.2) */
+        /* Treatment Head */
         .treatment-head {
             width: 200px;
             height: 300px;
@@ -76,7 +76,7 @@
             transform-origin: top;
         }
 
-        /* Beam Collimator (Based on FIG.3) */
+        /* Beam Collimator */
         .collimator {
             width: 150px;
             height: 150px;
@@ -88,7 +88,7 @@
             transform: rotateX(0deg);
         }
 
-        /* Patient Table (Based on FIG.1) */
+        /* Patient Table */
         .patient-table {
             width: 400px;
             height: 80px;
@@ -173,7 +173,7 @@
             100% { opacity: 0.3; }
         }
 
-        /* Component Details from Patent */
+        /* Component Details */
         .electron-source {
             width: 50px;
             height: 50px;
@@ -219,7 +219,7 @@
 <body>
     <div class="scene">
         <div class="linac-model">
-            <!-- Hauptkomponenten basierend auf dem Patent -->
+            <!-- Hauptkomponenten -->
             <div class="part gantry-arm">
                 <div class="beam-path"></div>
                 <div class="electron-source"></div>
@@ -242,14 +242,15 @@
     </div>
 
     <div class="specs-panel">
-        <h2>Patent US 3,322,950</h2>
+        <h2>Technische Spezifikationen</h2>
         <ul>
-            <li>Erfinder: J. S. Bailey et al.</li>
-            <li>Jahr: 1967</li>
-            <li>Strahlenergie: bis 18 MV</li>
-            <li>Gantry-Rotation: ±185°</li>
-            <li>Kollimator: Multi-Leaf</li>
-            <li>Vakuum: 10^-6 Torr</li>
+            <li>Maximale Energie: 18 MV</li>
+            <li>Dosisrate: 600 MU/min</li>
+            <li>Genauigkeit: ±1mm</li>
+            <li>Gantry-Rotation: 360°</li>
+            <li>Strahlenschutz: Pb/W</li>
+            <li>Dosismonitoring: Echtzeit</li>
+            <li>Notfallabschaltung: < 100ms</li>
         </ul>
     </div>
 
