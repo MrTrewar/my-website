@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gero Wieger - Lebenslauf</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --timeline-color: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .profile-info {
+            flex: 2;
+        }
+
+        .profile-image {
+            flex: 1;
+            text-align: right;
+        }
+
+        .profile-image img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .contact-info {
+            margin-top: 1rem;
+        }
+
+        .contact-info p {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-info i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        section {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -1.6rem;
+            top: 0.8rem;
+            width: 2px;
+            height: 100%;
+            background: var(--timeline-color);
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+
+            .profile-image {
+                margin-bottom: 2rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        .print-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        @media print {
+            .print-button {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            header, section {
+                background: white;
+                backdrop-filter: none;
+            }
+
+            h1, h2, p, strong {
+                text-shadow: none;
+            }
+        }
+
+        /* Linac Animation Styles */
+        .linac-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            filter: blur(0px);
+        }
+
+        .linac {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 600px;
+            transition: transform 0.3s ease-out;
+        }
+
+        .linac-part {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+            stroke: var(--primary-color);
+            stroke-width: 2;
+        }
+
+        .linac-part.visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.5));
+        }
+
+        @media (max-width: 768px) {
+            .linac {
+                width: 400px;
+                height: 300px;
+            }
+        }
+
+        @media print {
+            .linac-container {
+                display: none;
+            }
+        }
+
+        /* Verbesserte Text-Lesbarkeit */
+        h1, h2, p, strong {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="linac-container">
+        <svg class="linac" viewBox="0 0 800 600">
+            <!-- Gantry Base -->
+            <path class="linac-part" d="M300,500 L500,500 L500,480 L300,480 Z" fill="#2c3e50"/>
+            
+            <!-- Rotating Arm -->
+            <path class="linac-part" d="M350,480 L450,480 L500,300 L250,300 Z" fill="#3498db"/>
+            
+            <!-- Treatment Head -->
+            <path class="linac-part" d="M250,300 L500,300 L475,250 L275,250 Z" fill="#2c3e50"/>
+            
+            <!-- Collimator -->
+            <path class="linac-part" d="M300,250 L450,250 L425,200 L325,200 Z" fill="#3498db"/>
+            
+            <!-- Patient Table Base -->
+            <path class="linac-part" d="M200,450 L250,450 L250,430 L200,430 Z" fill="#2c3e50"/>
+            
+            <!-- Patient Table -->
+            <path class="linac-part" d="M150,430 L600,430 L600,410 L150,410 Z" fill="#3498db"/>
+            
+            <!-- Control Panel -->
+            <path class="linac-part" d="M550,500 L600,500 L600,350 L550,350 Z" fill="#2c3e50"/>
+            
+            <!-- Beam Direction Indicator -->
+            <path class="linac-part" d="M370,200 L380,200 L375,150 Z" fill="#e74c3c"/>
+            
+            <!-- Radiation Shield -->
+            <path class="linac-part" d="M275,250 L475,250 Q475,230 375,230 Q275,230 275,250" fill="#7f8c8d"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="profile-info">
+                <h1>Gero Wieger</h1>
+                <div class="contact-info">
+                    <p><i class="fas fa-calendar"></i>Geboren am 24. November 1996 in Aschaffenburg</p>
+                    <p><i class="fas fa-user"></i>Single</p>
+                    <p><i class="fas fa-envelope"></i><a href="mailto:gero.wieger@stud.uni-heidelberg.de">gero.wieger@stud.uni-heidelberg.de</a></p>
+                    <p><i class="fas fa-phone"></i><a href="tel:+4917634659482">+49 176 34659482</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i>M5 11, 68161 Mannheim, Germany</p>
+                </div>
+            </div>
+            <div class="profile-image">
+                <img src="profile.jpg" alt="Gero Wieger">
+            </div>
+        </header>
+
+        <section id="education">
+            <h2><i class="fas fa-graduation-cap"></i> Bildungsweg</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2007 – 2015</div>
+                    <div class="timeline-content">
+                        <strong>Georg-Büchner-Gymnasium Kaarst</strong>
+                        <p>Abitur</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">04/2016 – 09/2016</div>
+                    <div class="timeline-content">
+                        <strong>Universität Münster</strong>
+                        <p>Pharmaziestudium</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">10/2017 – 03/2018</div>
+                    <div class="timeline-content">
+                        <strong>Otto-Friedrich Universität Bamberg</strong>
+                        <p>BWL-Studium</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">09/2018 – 11/2021</div>
+                    <div class="timeline-content">
+                        <strong>Medizinische Fakultät Pécs, Ungarn</strong>
+                        <p>Medizinstudium</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">11/2021 – heute</div>
+                    <div class="timeline-content">
+                        <strong>Universität Heidelberg - Medizinische Fakultät Mannheim</strong>
+                        <p>Medizinstudium</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience">
+            <h2><i class="fas fa-briefcase"></i> Berufserfahrung & Klinische Ausbildung</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">07/2015 – 09/2015</div>
+                    <div class="timeline-content">
+                        <strong>LIM Liquids In Motion GmbH</strong>
+                        <p>Praktikum</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">10/2015</div>
+                    <div class="timeline-content">
+                        <strong>Johanna-Etienne Krankenhaus, Neuss</strong>
+                        <p>Pflegepraktikum (Allgemeinchirurgie)</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">12/2015 – 02/2016</div>
+                    <div class="timeline-content">
+                        <strong>LIM Liquids In Motion GmbH</strong>
+                        <p>Praktikum</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">08/2016 – 09/2016</div>
+                    <div class="timeline-content">
+                        <strong>Schützenapotheke, München</strong>
+                        <p>Famulatur</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">11/2016</div>
+                    <div class="timeline-content">
+                        <strong>Johanna-Etienne Krankenhaus, Neuss</strong>
+                        <p>Pflegepraktikum (Allgemeinchirurgie)</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">12/2016</div>
+                    <div class="timeline-content">
+                        <strong>Universitätsklinikum Köln</strong>
+                        <p>Pflegepraktikum (Onkologie)</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">03/2017 – 05/2017</div>
+                    <div class="timeline-content">
+                        <strong>Stoltenberg OHG</strong>
+                        <p>Praktikum im Großhandel</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">04/2018 – 05/2018</div>
+                    <div class="timeline-content">
+                        <strong>Stoltenberg OHG</strong>
+                        <p>Lagerarbeit</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">05/2018 – 07/2018</div>
+                    <div class="timeline-content">
+                        <strong>Softhale</strong>
+                        <p>Projektassistent</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">03/2022 – 04/2022</div>
+                    <div class="timeline-content">
+                        <strong>UMM</strong>
+                        <p>Famulatur in Radiologie und Nuklearmedizin</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">07/2022</div>
+                    <div class="timeline-content">
+                        <strong>Schleyer & Legler-Görke</strong>
+                        <p>Famulatur in Allgemeinmedizin</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">08/2022 – 09/2022</div>
+                    <div class="timeline-content">
+                        <strong>UMM</strong>
+                        <p>Wissenschaftlicher Mitarbeiter, Klinische Medizin</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">10/2022</div>
+                    <div class="timeline-content">
+                        <strong>Deutsches Rotes Kreuz</strong>
+                        <p>Studentische Hilfskraft</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">03/2023</div>
+                    <div class="timeline-content">
+                        <strong>UMM</strong>
+                        <p>Famulatur in Neurochirurgie</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">06/2023 – 07/2023</div>
+                    <div class="timeline-content">
+                        <strong>Universität Heidelberg</strong>
+                        <p>Wissenschaftlicher Mitarbeiter, Abteilung für Infektionskrankheiten und Tropenmedizin</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">08/2023</div>
+                    <div class="timeline-content">
+                        <strong>St. Pölten, Österreich</strong>
+                        <p>Famulatur in Dermatologie</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">01/2024</div>
+                    <div class="timeline-content">
+                        <strong>Universitätsklinikum Köln</strong>
+                        <p>Famulatur in Strahlentherapie, Cyberknife und Radiotherapie</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">02/2024</div>
+                    <div class="timeline-content">
+                        <strong>UMM</strong>
+                        <p>Famulatur in Strahlentherapie</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">03/2024</div>
+                    <div class="timeline-content">
+                        <strong>Universitätsklinikum Heidelberg</strong>
+                        <p>Famulatur in Strahlentherapie (Czerny-Klinik)</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">11/2024 – 05/2025</div>
+                    <div class="timeline-content">
+                        <strong>Forschungssemester</strong>
+                        <p>Doktorarbeit in Strahlentherapie</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="languages">
+            <h2><i class="fas fa-language"></i> Sprachkenntnisse</h2>
+            <div class="skills">
+                <div class="skill-item">
+                    <strong>Englisch</strong>
+                    <p>Fließend in Wort und Schrift</p>
+                    <p>TOEFL iBT (2017) Score: 106/120</p>
+                </div>
+                <div class="skill-item">
+                    <strong>Französisch</strong>
+                    <p>Grundkenntnisse</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="additional">
+            <h2><i class="fas fa-plus-circle"></i> Zusätzliche Erfahrungen</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <p>Teilnahme an der Online-Seminarreihe der Heidelberg School of Surgery</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <p>Forschungsarbeit am Institut für Klinische Chemie, UMM</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <button onclick="window.print()" class="print-button">
+        <i class="fas fa-print"></i> Drucken
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll für Anker-Links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Animation für Timeline-Items
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateX(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.timeline-item').forEach((item) => {
+                item.style.opacity = 0;
+                item.style.transform = 'translateX(-20px)';
+                item.style.transition = 'all 0.5s ease-out';
+                observer.observe(item);
+            });
+
+            // Linac Animation
+            const linacParts = document.querySelectorAll('.linac-part');
+            let lastScrollPosition = 0;
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            
+            function animateLinac() {
+                const scrollPosition = window.pageYOffset;
+                const scrollPercentage = (scrollPosition / totalScroll) * 100;
+                
+                linacParts.forEach((part, index) => {
+                    const partThreshold = (index / linacParts.length) * 100;
+                    
+                    if (scrollPercentage > partThreshold) {
+                        part.classList.add('visible');
+                    } else {
+                        part.classList.remove('visible');
+                    }
+                });
+
+                // Rotate the entire linac based on scroll
+                const rotation = (scrollPosition / totalScroll) * 360;
+                document.querySelector('.linac').style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+                
+                lastScrollPosition = scrollPosition;
+                requestAnimationFrame(animateLinac);
+            }
+
+            // Start the animation
+            animateLinac();
+
+            // Add parallax effect
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                document.querySelector('.linac-container').style.transform = 
+                    `translateY(${scrolled * 0.1}px)`;
+            });
+        });
+    </script>
+</body>
+</html> 
