@@ -6,6 +6,29 @@
     <title>Gero Wieger - Code Portfolio</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>">
     <style>
+        /* --- CSS Variables --- */
+        :root {
+            --bg-color-dark: #1e1e1e;
+            --text-color-dark: #d4d4d4;
+            --accent-color-dark: #4ec9b0;
+            --secondary-color-dark: #9cdcfe;
+            --code-bg-dark: #252526;
+            --border-color-dark: #333;
+            --shadow-color-dark: rgba(0, 0, 0, 0.2);
+            --glow-color-dark: rgba(0, 122, 204, 0.3);
+        }
+
+        [data-theme="light"] {
+            --bg-color-dark: #f8f9fa;
+            --text-color-dark: #212529;
+            --accent-color-dark: #007acc;
+            --secondary-color-dark: #343a40;
+            --code-bg-dark: #ffffff;
+            --border-color-dark: #dee2e6;
+            --shadow-color-dark: rgba(0, 0, 0, 0.05);
+            --glow-color-dark: rgba(44, 62, 80, 0.15);
+        }
+
         /* --- General Styles & Reset --- */
         * {
             box-sizing: border-box;
@@ -16,11 +39,11 @@
         html, body {
             height: 100%;
             font-family: 'Courier New', Courier, monospace;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
             line-height: 1.6;
             overflow-x: hidden;
-            transition: background-color 0.5s ease, color 0.5s ease; /* Smooth theme transition */
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         /* --- Container --- */
@@ -61,10 +84,10 @@
         /* --- Header / Logo --- */
         .logo {
             font-size: 2.5rem;
-            color: #4ec9b0;
+            color: var(--accent-color-dark);
             margin-bottom: 20px;
             font-weight: bold;
-            animation-delay: 0.2s; /* Stagger the animation start */
+            animation-delay: 0.2s;
             transition: color 0.5s ease;
         }
 
@@ -77,6 +100,36 @@
             animation: blink 1s step-end infinite;
             vertical-align: bottom;
             transition: background-color 0.5s ease;
+        }
+
+        .logo .cursor.typing-complete {
+            display: none;
+        }
+
+        .logo .name {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--accent-color-dark);
+            animation: typing 1.5s steps(20, end), blink-caret 0.75s step-end infinite;
+            width: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .logo .name.typing-complete {
+            width: 100%;
+            border-right: none;
+            animation: none;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #4ec9b0 }
         }
 
         /* --- Main Content --- */
@@ -99,31 +152,34 @@
 
         /* --- Code Simulation Area --- */
         .code-area {
-            background-color: #252526;
-            border: 1px solid #333;
+            background-color: var(--code-bg-dark);
+            border: 1px solid var(--border-color-dark);
             border-radius: 5px;
             padding: 20px;
-            margin-bottom: 30px;
+            margin: 0 auto 30px; /* Changed margin to auto for horizontal centering */
             text-align: left;
             width: 90%;
             max-width: 700px;
             min-height: 150px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.5s ease, border-color 0.5s ease; /* Smooth hover and theme */
-            animation-delay: 0.8s; /* Stagger */
+            box-shadow: 0 4px 8px var(--shadow-color-dark);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation-delay: 0.8s;
+            display: block; /* Ensure block display */
         }
 
         .code-area:hover {
-            transform: translateY(-6px) scale(1.01); /* Slightly bigger lift and scale */
-            box-shadow: 0 10px 20px rgba(0, 122, 204, 0.3); /* Enhanced glow effect */
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 10px 20px var(--glow-color-dark);
+            border-color: var(--accent-color-dark);
         }
 
         .code-area pre {
             white-space: pre-wrap;
             word-wrap: break-word;
             margin: 0;
+            text-align: left; /* Ensure code text is left-aligned */
         }
 
         .code-area code {
@@ -154,7 +210,7 @@
 
         /* --- Call to Action Button --- */
         .cta-button {
-            background-color: #007acc;
+            background: linear-gradient(45deg, var(--accent-color-dark), var(--secondary-color-dark));
             color: #ffffff;
             border: none;
             padding: 12px 25px;
@@ -162,23 +218,44 @@
             font-family: 'Courier New', Courier, monospace;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother ease function */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 10px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-            display: inline-block; /* Needed for margin */
+            box-shadow: 0 3px 6px var(--shadow-color-dark);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
         }
 
         .cta-button:hover {
-            background-color: #005fa3;
-            transform: translateY(-3px); /* Slightly more lift */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--glow-color-dark);
         }
 
-        .cta-button:active {
-            transform: translateY(1px) scale(0.98); /* More noticeable active state */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:focus {
+            outline: 2px solid var(--accent-color-dark);
+            outline-offset: 2px;
         }
 
         /* --- Social Links --- */
@@ -189,19 +266,40 @@
         }
 
         .social-links a {
-            color: #4ec9b0;
+            color: var(--accent-color-dark);
             text-decoration: none;
             margin: 0 10px;
-            transition: all 0.3s ease-in-out; /* Smoother transition */
+            transition: all 0.3s ease-in-out;
             padding: 5px 10px;
             border-radius: 3px;
-            display: inline-block; /* Ensure padding works well */
+            display: inline-block;
+            position: relative;
+        }
+
+        .social-links a::after {
+            content: attr(data-platform);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .social-links a:hover::after {
+            opacity: 1;
         }
 
         .social-links a:hover {
-            color: #9cdcfe;
-            background-color: rgba(78, 201, 176, 0.15); /* Slightly stronger hover background */
-            transform: scale(1.05); /* Add a slight scale on hover */
+            color: var(--secondary-color-dark);
+            background-color: rgba(78, 201, 176, 0.15);
+            transform: scale(1.05);
         }
 
         /* --- Footer --- */
@@ -332,6 +430,23 @@
                 margin: 0 5px; /* Reduce spacing */
             }
         }
+
+        /* --- Reduced Motion --- */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .logo, h2, p, .code-area, .button-container, .social-links, footer {
+                animation: none;
+                opacity: 1;
+            }
+            #themeToggle:hover {
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body data-theme="dark"> <!-- Set default theme -->
@@ -339,7 +454,7 @@
 
     <div class="container">
         <header>
-            <h1 class="logo">Gero Wieger<span class="cursor">_</span></h1>
+            <h1 class="logo"><span class="name">Gero Wieger</span><span class="cursor">_</span></h1>
         </header>
 
         <main>
@@ -357,8 +472,8 @@
             </div>
 
             <div class="social-links">
-                <a href="https://github.com/MrTrewar" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a href="https://linkedin.com/in/gero-wieger-3802731a0/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a href="https://github.com/MrTrewar" target="_blank" rel="noopener noreferrer" data-platform="GitHub">GitHub</a>
+                <a href="https://linkedin.com/in/gero-wieger-3802731a0/" target="_blank" rel="noopener noreferrer" data-platform="LinkedIn">LinkedIn</a>
                 <!-- Add more social links as needed -->
                 <!-- Example: <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer">Twitter</a> -->
             </div>
@@ -458,10 +573,18 @@
             const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
             setTheme(initialTheme);
 
+            // Add class after typing animation completes
+            const nameElement = document.querySelector('.logo .name');
+            const cursorElement = document.querySelector('.logo .cursor');
+            setTimeout(() => {
+                nameElement.classList.add('typing-complete');
+                cursorElement.classList.add('typing-complete');
+            }, 1500); // Match this with the typing animation duration
+
             // Start the typing animation after initial animations have likely run
             typingCursorElement.style.animation = 'blink 1s step-end infinite';
-             typingCursorElement.style.opacity = '1'; // Ensure cursor is visible initially
-            typingTimeout = setTimeout(typeCharacter, 1600); // Delay typing start to allow elements to fade in
+            typingCursorElement.style.opacity = '1';
+            typingTimeout = setTimeout(typeCharacter, 1600);
         });
 
     </script>
