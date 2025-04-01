@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gero Rawert - Softwareentwicklung & Medizintechnik</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <title>Gero Rawert - Code Portfolio</title>
     <style>
         /* --- General Styles & Reset --- */
         * {
@@ -79,6 +77,12 @@
             min-height: 150px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .code-area:hover {
+            transform: translateY(-5px);
         }
 
         .code-area pre {
@@ -114,14 +118,17 @@
             font-family: 'Courier New', Courier, monospace;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .cta-button:hover {
             background-color: #005fa3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .cta-button:active {
@@ -150,11 +157,14 @@
             color: #4ec9b0;
             text-decoration: none;
             margin: 0 10px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 3px;
         }
 
         .social-links a:hover {
             color: #9cdcfe;
+            background-color: rgba(78, 201, 176, 0.1);
         }
 
         /* --- Theme Toggle --- */
@@ -168,6 +178,64 @@
             cursor: pointer;
             font-size: 1.5rem;
             z-index: 1000;
+            transition: transform 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        #themeToggle:hover {
+            transform: rotate(180deg);
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Light Theme --- */
+        [data-theme="light"] {
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        [data-theme="light"] .code-area {
+            background-color: #f5f5f5;
+            border-color: #ddd;
+        }
+
+        [data-theme="light"] .code-area code {
+            color: #333333;
+        }
+
+        [data-theme="light"] .logo {
+            color: #2c3e50;
+        }
+
+        [data-theme="light"] h2 {
+            color: #2c3e50;
+        }
+
+        [data-theme="light"] p {
+            color: #666666;
+        }
+
+        [data-theme="light"] .social-links a {
+            color: #2c3e50;
+        }
+
+        [data-theme="light"] .social-links a:hover {
+            color: #3498db;
+            background-color: rgba(44, 62, 80, 0.1);
+        }
+
+        [data-theme="light"] #themeToggle {
+            color: #2c3e50;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="light"] #themeToggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         /* --- Responsive Adjustments --- */
@@ -197,9 +265,7 @@
     </style>
 </head>
 <body>
-    <button id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </button>
+    <button id="themeToggle" aria-label="Theme wechseln">🌙</button>
 
     <div class="container">
         <header>
@@ -207,22 +273,21 @@
         </header>
 
         <main>
-            <h2>Softwareentwicklung & Medizintechnik</h2>
-            <p>Entwicklung innovativer Lösungen an der Schnittstelle von Software und Medizintechnik.</p>
+            <h2>Code Portfolio</h2>
+            <p>Entdecken Sie meine Projekte und Code-Beispiele aus den Bereichen Softwareentwicklung und Medizintechnik.</p>
 
             <div class="code-area">
                 <pre><code id="typed-code"></code></pre><span class="typing-cursor" id="typing-cursor">|</span>
             </div>
 
             <div>
-                <button id="projects-button" class="cta-button">Projekte</button>
-                <button id="contact-button" class="cta-button">Kontakt</button>
-                <button id="downloadCV" class="cta-button">CV Download</button>
+                <button id="github-button" class="cta-button">GitHub</button>
+                <button id="linkedin-button" class="cta-button">LinkedIn</button>
             </div>
 
             <div class="social-links">
-                <a href="https://github.com/gerorawert" target="_blank">GitHub</a>
-                <a href="https://linkedin.com/in/gerorawert" target="_blank">LinkedIn</a>
+                <a href="https://github.com/gerorawert" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://linkedin.com/in/gerorawert" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </div>
         </main>
 
@@ -231,18 +296,17 @@
         </footer>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // --- Configuration ---
         const codeLines = [
-            "// Willkommen auf meiner Seite!",
+            "// Willkommen in meinem Code Portfolio!",
             "function entwickleInnovation() {",
             "  const medizin = 'Medizintechnik';",
             "  const software = 'Softwareentwicklung';",
             "  return `${medizin} + ${software} = Innovation`;",
             "}",
             "",
-            "// Lassen Sie uns gemeinsam etwas bewegen...",
+            "// Entdecken Sie meine Projekte...",
         ];
         const typingSpeed = 80;
         const lineDelay = 400;
@@ -250,9 +314,8 @@
         // --- Get DOM Elements ---
         const typedCodeElement = document.getElementById('typed-code');
         const typingCursorElement = document.getElementById('typing-cursor');
-        const projectsButton = document.getElementById('projects-button');
-        const contactButton = document.getElementById('contact-button');
-        const downloadCV = document.getElementById('downloadCV');
+        const githubButton = document.getElementById('github-button');
+        const linkedinButton = document.getElementById('linkedin-button');
         const themeToggle = document.getElementById('themeToggle');
 
         // --- Typing Animation Logic ---
@@ -285,33 +348,19 @@
         }
 
         // --- Button Interactions ---
-        projectsButton.addEventListener('click', () => {
-            window.location.href = '/projects.html';
+        githubButton.addEventListener('click', () => {
+            window.open('https://github.com/gerorawert', '_blank', 'noopener,noreferrer');
         });
 
-        contactButton.addEventListener('click', () => {
-            window.location.href = '/contact.html';
-        });
-
-        downloadCV.addEventListener('click', () => {
-            window.print();
+        linkedinButton.addEventListener('click', () => {
+            window.open('https://linkedin.com/in/gerorawert', '_blank', 'noopener,noreferrer');
         });
 
         // --- Theme Toggle ---
         themeToggle.addEventListener('click', () => {
-            document.body.setAttribute('data-theme', 
-                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
-            );
-            
-            const icon = themeToggle.querySelector('i');
-            icon.classList.toggle('fa-moon');
-            icon.classList.toggle('fa-sun');
-        });
-
-        // --- Initialize AOS ---
-        AOS.init({
-            duration: 800,
-            once: true
+            const isDark = document.body.getAttribute('data-theme') !== 'light';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
         });
 
         // --- Start the typing animation ---
@@ -319,4 +368,4 @@
         setTimeout(typeCharacter, 1000);
     </script>
 </body>
-</html> 
+</html>
