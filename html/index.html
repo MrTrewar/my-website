@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gero Rawert - Softwareentwicklung & Medizintechnik</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        /* --- General Styles & Reset --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Container --- */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* --- Header / Logo --- */
+        .logo {
+            font-size: 2.5rem;
+            color: #4ec9b0;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .logo .cursor {
+            display: inline-block;
+            background-color: #d4d4d4;
+            width: 10px;
+            height: 2.5rem;
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom;
+        }
+
+        /* --- Main Content --- */
+        h2 {
+            font-size: 1.8rem;
+            color: #9cdcfe;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+            color: #b5cea8;
+        }
+
+        /* --- Code Simulation Area --- */
+        .code-area {
+            background-color: #252526;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            width: 90%;
+            max-width: 700px;
+            min-height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-area pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+
+        .code-area code {
+            display: block;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            color: #d4d4d4;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            background-color: #aeafad;
+            width: 8px;
+            height: 1.1em;
+            margin-left: 1px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        /* --- Call to Action Button --- */
+        .cta-button {
+            background-color: #007acc;
+            color: #ffffff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 10px;
+        }
+
+        .cta-button:hover {
+            background-color: #005fa3;
+        }
+
+        .cta-button:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* --- Blinking Animation --- */
+        @keyframes blink {
+            from, to { background-color: transparent; }
+            50% { background-color: #d4d4d4; }
+        }
+
+        /* --- Social Links --- */
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #4ec9b0;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #9cdcfe;
+        }
+
+        /* --- Theme Toggle --- */
+        #themeToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #4ec9b0;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 1000;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 2rem;
+            }
+            .logo .cursor {
+                height: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+            .code-area {
+                width: 95%;
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+            .cta-button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+        <header>
+            <h1 class="logo">Gero Rawert<span class="cursor">_</span></h1>
+        </header>
+
+        <main>
+            <h2>Softwareentwicklung & Medizintechnik</h2>
+            <p>Entwicklung innovativer Lösungen an der Schnittstelle von Software und Medizintechnik.</p>
+
+            <div class="code-area">
+                <pre><code id="typed-code"></code></pre><span class="typing-cursor" id="typing-cursor">|</span>
+            </div>
+
+            <div>
+                <button id="projects-button" class="cta-button">Projekte</button>
+                <button id="contact-button" class="cta-button">Kontakt</button>
+                <button id="downloadCV" class="cta-button">CV Download</button>
+            </div>
+
+            <div class="social-links">
+                <a href="https://github.com/gerorawert" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/in/gerorawert" target="_blank">LinkedIn</a>
+            </div>
+        </main>
+
+        <footer>
+            &copy; 2024 Gero Rawert
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // --- Configuration ---
+        const codeLines = [
+            "// Willkommen auf meiner Seite!",
+            "function entwickleInnovation() {",
+            "  const medizin = 'Medizintechnik';",
+            "  const software = 'Softwareentwicklung';",
+            "  return `${medizin} + ${software} = Innovation`;",
+            "}",
+            "",
+            "// Lassen Sie uns gemeinsam etwas bewegen...",
+        ];
+        const typingSpeed = 80;
+        const lineDelay = 400;
+
+        // --- Get DOM Elements ---
+        const typedCodeElement = document.getElementById('typed-code');
+        const typingCursorElement = document.getElementById('typing-cursor');
+        const projectsButton = document.getElementById('projects-button');
+        const contactButton = document.getElementById('contact-button');
+        const downloadCV = document.getElementById('downloadCV');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // --- Typing Animation Logic ---
+        let lineIndex = 0;
+        let charIndex = 0;
+        let isTyping = true;
+
+        function typeCharacter() {
+            if (!isTyping) return;
+
+            if (lineIndex >= codeLines.length) {
+                typingCursorElement.style.animation = 'none';
+                typingCursorElement.style.backgroundColor = '#aeafad';
+                isTyping = false;
+                return;
+            }
+
+            const currentLine = codeLines[lineIndex];
+
+            if (charIndex < currentLine.length) {
+                typedCodeElement.textContent += currentLine.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeCharacter, typingSpeed);
+            } else {
+                typedCodeElement.textContent += '\n';
+                lineIndex++;
+                charIndex = 0;
+                setTimeout(typeCharacter, lineDelay);
+            }
+        }
+
+        // --- Button Interactions ---
+        projectsButton.addEventListener('click', () => {
+            window.location.href = '/projects.html';
+        });
+
+        contactButton.addEventListener('click', () => {
+            window.location.href = '/contact.html';
+        });
+
+        downloadCV.addEventListener('click', () => {
+            window.print();
+        });
+
+        // --- Theme Toggle ---
+        themeToggle.addEventListener('click', () => {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+            
+            const icon = themeToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+
+        // --- Initialize AOS ---
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // --- Start the typing animation ---
+        typingCursorElement.style.animation = 'blink 1s step-end infinite';
+        setTimeout(typeCharacter, 1000);
+    </script>
+</body>
+</html> 
